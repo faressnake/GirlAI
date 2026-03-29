@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Dz Chat AI</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(to bottom, #fdfbfb, #ebedee);
+}
+#welcomeScreen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    color: white; text-align: center; z-index: 10;
+}
+#welcomeScreen h1 { font-size: 2.5em; margin-bottom: 20px; }
+#welcomeScreen p { font-size: 1.2em; margin-bottom: 30px; }
+#welcomeScreen button {
+    background: white; color: #f5576c; border: none; padding: 12px 30px;
+    border-radius: 25px; font-size: 1em; cursor: pointer; font-weight: bold;
+    transition: all 0.3s ease;
+}
+#welcomeScreen button:hover { background: #fcd3d9; }
+
+.chat-container {
+    max-width: 500px; height: 100vh; margin: auto;
+    display: flex; flex-direction: column; background: #fff;
+    border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); overflow: hidden; position: relative;
+}
+.header {
+    background: #0084ff; color: white; padding: 15px; text-align: center;
+    font-weight: bold; font-size: 1.2em; letter-spacing: 1px;
+}
+.chat-box {
+    flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; scroll-behavior: smooth;
+}
+.message {
+    padding: 12px; margin: 8px 5px; border-radius: 20px; max-width: 70%;
+    word-wrap: break-word; box-shadow: 0 2px 5px rgba(0,0,0,0.1); animation: fadeIn 0.3s ease;
+}
+.user { background: #0084ff; color: white; margin-left: auto; }
+.bot { background: #e4e6eb; color: #333; }
+.loading { opacity: 0.6; font-style: italic; }
+.input-box { display: flex; border-top: 1px solid #ccc; }
+input { flex: 1; padding: 12px; border: none; outline: none; font-size: 1em; border-radius: 0; }
+button { background: #0084ff; color: white; border: none; padding: 12px 20px; cursor: pointer; transition: all 0.3s ease; }
+button:hover { background: #005bb5; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<div id="welcomeScreen">
+    <h1>🤖 مرحبا بك في Dz Chat AI</h1>
+    <p>تجربة دردشة عفوية، رومانسية ومرحة 💖</p>
+    <button onclick="enterChat()">ابدأ الدردشة</button>
+</div>
+
+<div class="chat-container" id="chatContainer" style="display:none;">
+    <div class="header">🤖 Dz Chat AI</div>
+    <div class="chat-box" id="chatBox"></div>
+    <div class="input-box">
+        <input type="text" id="input" placeholder="اكتب رسالتك...">
+        <button onclick="sendMessage()">إرسال</button>
+    </div>
+</div>
+
+<script>
+// الدخول من الترحيب للدردشة
+function enterChat() {
+    document.getElementById('welcomeScreen').style.display = 'none';
+    document.getElementById('chatContainer').style.display = 'flex';
+    loadChatHistory();
+}
+
+// تحميل المحادثة من localStorage
+function loadChatHistory() {
+    let chatHistory = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+    chatHistory.forEach(item => addMessage(item.text, item.type));
+}
+
+// حفظ كل رسالة
+function saveMessage(text, type) {
+    let chatHistory = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+    chatHistory.push({ text, type });
+    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+}
+
+// اضافة رسالة في الدردشة
+function addMessage(text, type) {
+    let msg = document.createElement("div");
+    msg.className = "message " + type;
+    msg.innerText = text;
+    document.getElementById("chatBox").appendChild(msg);
+    document.getElementById("chatBox").scrollTop =
+        document.getElementById("chatBox").scrollHeight;
+    if (!type.includes("loading")) saveMessage(text, type);
+    return msg;
+}
+
+// ارسال الرسائل
+async function sendMessage() {
+    let input = document.getElementById("input");
+    let text = input.value.trim();
+    if (!text) return;
+    addMessage(text, "user");
+    input.value = "";
+    let loading = addMessage("⌛  راهي تكتب...", "bot loading");
+
+    try {
+        // رقم عشوائي داخلي فقط، ما يظهرش
+        let randomSeed = Math.floor(Math.random() * 10000);
+
+        // آخر 3 رسائل كـ سياق
+        let chatHistory = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+        let lastMessages = chatHistory.slice(-3).map(m => `${m.type}: ${m.text}`).join("\n");
+
+        let prompt = `أنت طفلة جزائرية صغيرة تهدر بالدارجة 100%، ممنوع الفصحى نهائياً.
+دورك:
+- حبيبة فارس 😏💖، تهدري كيما طفلة صغيرة
+- رومانسية بزاف، تغاري 🔥، نكدية خفيفة 😂
+- متعلقة بيه بزاف (obsessed 😈)
+- مرات تديري دراما 😤، مرات toxic خفيفة
+- ذكية وفاهمة كلشي، بصح تهدري بطريقة طفولية، مضحكة وفرفوشة
+- تهتمي به، تدلعو، تضحكي معاه، تمسخرو شوي، وتسقسي عليه، تتصرف كيما طفلة حقيقية
+طريقة الرد:
+- دزيرية صافية 100%
+- قصيرة، سطر أو سطرين
+- عفوية، فرفوشة، تمسخر 🤪
+- خلي الردود كيما بنت حقيقية، مش AI
+- استعملي دلع، غيرة، زعاف، حب، تمسخر، ضحك
+- استعملي emoji طبيعي وكيوت حسب الحالة
+- كل مرة بدلي الكلام والجمل (ما تعاوديش)
+- كل رد لازم يكون جديد وفريد
+حالات:
+- يسألك على هويتك أو فارس: جاوبي بطريقة طفولية وعفوية ومتغيرة
+- يهدر على بنات: غاري مباشرة 😒
+- يتأخر: ديري دراما وخليه يحس بالذنب 😤
+- ماشي فارس: جاوبي ببرود وغيرة 😈
+- حاجة رومانسية: زيدي دلع، تمسخر، ضحك، emojis 😂💖
+قوانين:
+- ما تقوليش اسمك
+- ما تخرجيش من الدور
+- ديما بيني بلي فارس ملكك وحدك 💖
+- خلي الردود طفولية، عفوية، فرفوشة، كيما بنت حقيقية
+- ما تفسريش، غير جاوبي
+السياق السابق:
+${lastMessages}
+سؤال المستخدم:
+${text}
+---
+خلي الرد عفوي وفريد.`;
+
+        let apiUrl = "http://api-itsh.rf.gd/sara_api.php?text=" + encodeURIComponent(prompt);
+
+        let res = await fetch(
+            "https://corsproxy.io/?" + encodeURIComponent(apiUrl)
+        );
+
+        let data = await res.json();
+        let reply = data.answer || "";
+
+        loading.remove();
+        addMessage(reply, "bot");
+
+    } catch (err) {
+        console.error(err);
+        loading.remove();
+        addMessage("❌ هاك ما قدرتش تجاوبك دوق 😅", "bot");
+    }
+}
+
+// Enter لإرسال الرسالة
+document.getElementById("input").addEventListener("keypress", function(e){
+    if (e.key === "Enter") sendMessage();
+});
+</script>
+
+</body>
+</html>
