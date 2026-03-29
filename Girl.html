@@ -2,21 +2,24 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dz Chat AI</title>
+
 <style>
-/* ===== جسم الصفحة ===== */
 body {
     margin: 0;
     font-family: 'Poppins', Arial, sans-serif;
-    background: #f0f2f5;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: stretch; /* خلي الدردشة تغطي كامل الشاشة */
+    background: linear-gradient(to bottom, #fdfbfb, #ebedee);
 }
 
-/* ===== واجهة الترحيب ===== */
+/* responsive فقط */
+@media (max-width:600px){
+.chat-container{
+    max-width:100%;
+    border-radius:0;
+}
+}
+
 #welcomeScreen {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -29,121 +32,77 @@ body {
 #welcomeScreen button {
     background: white; color: #f5576c; border: none; padding: 12px 30px;
     border-radius: 25px; font-size: 1em; cursor: pointer; font-weight: bold;
-    transition: all 0.3s ease;
 }
-#welcomeScreen button:hover { background: #fcd3d9; }
 
-/* ===== حاوية الدردشة full screen ===== */
 .chat-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    overflow: hidden;
+    max-width: 500px; height: 100vh; margin: auto;
+    display: flex; flex-direction: column; background: #fff;
+    border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); overflow: hidden;
 }
 
-/* ===== الهيدر ===== */
 .header {
-    background: #0084ff;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.2em;
-    letter-spacing: 1px;
+    background: #0084ff; color: white; padding: 15px; text-align: center;
+    font-weight: bold; font-size: 1.2em;
 }
 
-/* ===== صندوق الرسائل ===== */
 .chat-box {
     flex: 1;
-    padding: 15px;
+    padding: 8px 10px; /* نقصناه باش يولي ضيق كي الصورة */
     overflow-y: auto;
-    background: #f9f9f9;
-    scroll-behavior: smooth;
-    display: flex;
-    flex-direction: column;
+    background: #f0f2f5;
 }
-
-/* ===== الرسائل ===== */
 .message {
-    padding: 12px;
-    margin: 5px 0;
-    border-radius: 20px;
-    max-width: 70%;
-    word-wrap: break-word;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    animation: fadeIn 0.3s ease;
+    padding: 8px 10px; /* أصغر */
+    margin: 3px 5px;   /* تقارب بين الرسائل */
+    border-radius: 14px;
+    max-width: 65%;    /* مهم باش يجي كي الصورة */
+    font-size: 0.85em; /* صغّر الخط */
+    line-height: 1.3;
 }
 
-/* رسائل المستخدم */
-.user { 
-    background: #0084ff; 
-    color: white; 
-    margin-left: auto; 
-    border-bottom-right-radius: 0;
+.user {
+    background: #0084ff;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
 }
 
-/* رسائل البوت */
-.bot { 
-    background: #e4e6eb; 
-    color: #333; 
+.bot {
+    background: #e4e6eb;
+    color: #000;
     margin-right: auto;
-    border-bottom-left-radius: 0;
+    border-bottom-left-radius: 4px;
+}
+/* الوقت */
+.time {
+    font-size: 0.6em;
+    opacity: 0.5;
+    margin-top: 2px;
 }
 
-/* حالة كتابة البوت */
-.loading { 
-    opacity: 0.6; 
-    font-style: italic; 
+/* typing animation */
+.typing {
+    display: flex;
+    gap: 4px;
+}
+.typing span {
+    width: 6px;
+    height: 6px;
+    background: #555;
+    border-radius: 50%;
+    animation: blink 1.4s infinite;
+}
+.typing span:nth-child(2){animation-delay:0.2s;}
+.typing span:nth-child(3){animation-delay:0.4s;}
+
+@keyframes blink {
+    0%,80%,100%{opacity:0.3;}
+    40%{opacity:1;}
 }
 
-/* ===== صندوق الإدخال ===== */
-.input-box { 
-    display: flex; 
-    border-top: 1px solid #ccc; 
-    padding: 8px;
-    background: #fff;
-}
-
-input { 
-    flex: 1; 
-    padding: 12px 15px; 
-    border: 1px solid #ccc; 
-    border-radius: 25px; 
-    outline: none; 
-    font-size: 1em; 
-    margin-right: 8px;
-}
-
-button { 
-    background: #0084ff; 
-    color: white; 
-    border: none; 
-    padding: 12px 20px; 
-    cursor: pointer; 
-    transition: all 0.3s ease; 
-    border-radius: 25px;
-}
-
-button:hover { 
-    background: #005bb5; 
-}
-
-/* ===== الرسوميات ===== */
-@keyframes fadeIn { 
-    from { opacity: 0; transform: translateY(10px); } 
-    to { opacity: 1; transform: translateY(0); } 
-}
-
-/* ===== responsive للهواتف ===== */
-@media (max-width: 500px) {
-    .chat-container { width: 100%; height: 100%; }
-    .header { font-size: 1em; padding: 12px; }
-    .message { font-size: 0.95em; }
-    input { font-size: 0.95em; padding: 10px 12px; }
-    button { padding: 10px 15px; font-size: 0.95em; }
-}
+.input-box { display: flex; border-top: 1px solid #ccc; }
+input { flex: 1; padding: 12px; border: none; outline: none; }
+button { background: #0084ff; color: white; border: none; padding: 12px 20px; }
 </style>
 </head>
 <body>
@@ -164,52 +123,78 @@ button:hover {
 </div>
 
 <script>
-// الدخول من الترحيب للدردشة
+
+// الوقت
+function getTime(){
+let d=new Date();
+return d.getHours().toString().padStart(2,'0')+":"+
+d.getMinutes().toString().padStart(2,'0');
+}
+
+// الدخول
 function enterChat() {
     document.getElementById('welcomeScreen').style.display = 'none';
     document.getElementById('chatContainer').style.display = 'flex';
     loadChatHistory();
 }
 
-// تحميل المحادثة من localStorage
+// تحميل
 function loadChatHistory() {
     let chatHistory = JSON.parse(localStorage.getItem("chatHistory") || "[]");
     chatHistory.forEach(item => addMessage(item.text, item.type));
 }
 
-// حفظ كل رسالة
+// حفظ
 function saveMessage(text, type) {
     let chatHistory = JSON.parse(localStorage.getItem("chatHistory") || "[]");
     chatHistory.push({ text, type });
     localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
 }
 
-// اضافة رسالة في الدردشة
+// رسالة
 function addMessage(text, type) {
     let msg = document.createElement("div");
     msg.className = "message " + type;
-    msg.innerText = text;
+
+    let content = document.createElement("div");
+    content.innerText = text;
+
+    let time = document.createElement("div");
+    time.className = "time";
+    time.innerText = getTime();
+
+    msg.appendChild(content);
+    msg.appendChild(time);
+
     document.getElementById("chatBox").appendChild(msg);
     document.getElementById("chatBox").scrollTop =
         document.getElementById("chatBox").scrollHeight;
+
     if (!type.includes("loading")) saveMessage(text, type);
     return msg;
 }
 
-// ارسال الرسائل
+// ارسال
 async function sendMessage() {
     let input = document.getElementById("input");
     let text = input.value.trim();
     if (!text) return;
+
     addMessage(text, "user");
     input.value = "";
-    let loading = addMessage("⌛  راهي تكتب...", "bot loading");
+
+    /* typing */
+    let loading = document.createElement("div");
+    loading.className = "message bot";
+    loading.innerHTML = `
+    <div class="typing">
+        <span></span><span></span><span></span>
+    </div>`;
+    document.getElementById("chatBox").appendChild(loading);
 
     try {
-        // رقم عشوائي داخلي فقط، ما يظهرش
         let randomSeed = Math.floor(Math.random() * 10000);
 
-        // آخر 3 رسائل كـ سياق
         let chatHistory = JSON.parse(localStorage.getItem("chatHistory") || "[]");
         let lastMessages = chatHistory.slice(-3).map(m => `${m.type}: ${m.text}`).join("\n");
 
@@ -251,28 +236,22 @@ ${text}
 
         let apiUrl = "http://api-itsh.rf.gd/sara_api.php?text=" + encodeURIComponent(prompt);
 
-        let res = await fetch(
-            "https://corsproxy.io/?" + encodeURIComponent(apiUrl)
-        );
-
+        let res = await fetch("https://corsproxy.io/?" + encodeURIComponent(apiUrl));
         let data = await res.json();
-        let reply = data.answer || "";
 
         loading.remove();
-        addMessage(reply, "bot");
+        addMessage(data.answer || "😅", "bot");
 
     } catch (err) {
-        console.error(err);
         loading.remove();
         addMessage("❌ هاك ما قدرتش تجاوبك دوق 😅", "bot");
     }
 }
 
-// Enter لإرسال الرسالة
 document.getElementById("input").addEventListener("keypress", function(e){
     if (e.key === "Enter") sendMessage();
 });
 </script>
 
 </body>
-</html>
+        </html>
