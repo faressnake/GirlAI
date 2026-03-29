@@ -3,13 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <title>Dz Chat AI</title>
-
 <style>
+/* ===== جسم الصفحة ===== */
 body {
     margin: 0;
     font-family: 'Poppins', Arial, sans-serif;
-    background: linear-gradient(to bottom, #fdfbfb, #ebedee);
+    background: #f0f2f5;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: stretch; /* خلي الدردشة تغطي كامل الشاشة */
 }
+
+/* ===== واجهة الترحيب ===== */
 #welcomeScreen {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -26,30 +33,117 @@ body {
 }
 #welcomeScreen button:hover { background: #fcd3d9; }
 
+/* ===== حاوية الدردشة full screen ===== */
 .chat-container {
-    max-width: 500px; height: 100vh; margin: auto;
-    display: flex; flex-direction: column; background: #fff;
-    border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); overflow: hidden; position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    overflow: hidden;
 }
+
+/* ===== الهيدر ===== */
 .header {
-    background: #0084ff; color: white; padding: 15px; text-align: center;
-    font-weight: bold; font-size: 1.2em; letter-spacing: 1px;
+    background: #0084ff;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    letter-spacing: 1px;
 }
+
+/* ===== صندوق الرسائل ===== */
 .chat-box {
-    flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; scroll-behavior: smooth;
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f9f9f9;
+    scroll-behavior: smooth;
+    display: flex;
+    flex-direction: column;
 }
+
+/* ===== الرسائل ===== */
 .message {
-    padding: 12px; margin: 8px 5px; border-radius: 20px; max-width: 70%;
-    word-wrap: break-word; box-shadow: 0 2px 5px rgba(0,0,0,0.1); animation: fadeIn 0.3s ease;
+    padding: 12px;
+    margin: 5px 0;
+    border-radius: 20px;
+    max-width: 70%;
+    word-wrap: break-word;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    animation: fadeIn 0.3s ease;
 }
-.user { background: #0084ff; color: white; margin-left: auto; }
-.bot { background: #e4e6eb; color: #333; }
-.loading { opacity: 0.6; font-style: italic; }
-.input-box { display: flex; border-top: 1px solid #ccc; }
-input { flex: 1; padding: 12px; border: none; outline: none; font-size: 1em; border-radius: 0; }
-button { background: #0084ff; color: white; border: none; padding: 12px 20px; cursor: pointer; transition: all 0.3s ease; }
-button:hover { background: #005bb5; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* رسائل المستخدم */
+.user { 
+    background: #0084ff; 
+    color: white; 
+    margin-left: auto; 
+    border-bottom-right-radius: 0;
+}
+
+/* رسائل البوت */
+.bot { 
+    background: #e4e6eb; 
+    color: #333; 
+    margin-right: auto;
+    border-bottom-left-radius: 0;
+}
+
+/* حالة كتابة البوت */
+.loading { 
+    opacity: 0.6; 
+    font-style: italic; 
+}
+
+/* ===== صندوق الإدخال ===== */
+.input-box { 
+    display: flex; 
+    border-top: 1px solid #ccc; 
+    padding: 8px;
+    background: #fff;
+}
+
+input { 
+    flex: 1; 
+    padding: 12px 15px; 
+    border: 1px solid #ccc; 
+    border-radius: 25px; 
+    outline: none; 
+    font-size: 1em; 
+    margin-right: 8px;
+}
+
+button { 
+    background: #0084ff; 
+    color: white; 
+    border: none; 
+    padding: 12px 20px; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    border-radius: 25px;
+}
+
+button:hover { 
+    background: #005bb5; 
+}
+
+/* ===== الرسوميات ===== */
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+/* ===== responsive للهواتف ===== */
+@media (max-width: 500px) {
+    .chat-container { width: 100%; height: 100%; }
+    .header { font-size: 1em; padding: 12px; }
+    .message { font-size: 0.95em; }
+    input { font-size: 0.95em; padding: 10px 12px; }
+    button { padding: 10px 15px; font-size: 0.95em; }
+}
 </style>
 </head>
 <body>
