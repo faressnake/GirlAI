@@ -120,6 +120,19 @@ button { background: #0084ff; color: white; border: none; padding: 12px 20px; }
         <input type="text" id="input" placeholder="اكتب رسالتك...">
         <button onclick="sendMessage()">إرسال</button>
     </div>
+    <!-- زر مسح المحادثة -->
+<button id="clearChat" style="
+    background:#ff4d4d; 
+    color:white; 
+    border:none; 
+    padding:6px 12px; 
+    border-radius:8px; 
+    font-size:0.8em; 
+    margin:5px;
+    cursor:pointer;
+">
+مسح الدردشة
+</button>
     <div style="text-align:center; font-size:0.7em; color:#888; padding:5px;">
     Developed by FaresCodex
     </div>
@@ -253,6 +266,13 @@ ${text}
 
 document.getElementById("input").addEventListener("keypress", function(e){
     if (e.key === "Enter") sendMessage();
+});
+    // مسح المحادثة
+document.getElementById("clearChat").addEventListener("click", function() {
+    if(confirm("واش تحب تمسح كل الدردشة؟")) {  // رسالة تأكيد
+        localStorage.removeItem("chatHistory"); // يمسح كل التاريخ المحفوظ
+        document.getElementById("chatBox").innerHTML = ""; // يمسح كل الرسائل من الواجهة
+    }
 });
 </script>
 
